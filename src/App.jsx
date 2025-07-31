@@ -1,0 +1,43 @@
+import { useState } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router"
+
+
+import Dashboard from "./components/dashboard/Dashboard"
+import Login from "./components/authlogin/AuthLogin"
+import NotFound from "./routes/notFound/NotFound";
+import Protected from "./routes/protected/Protected";
+
+const App = () => {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  const handleLogin = () => {
+    setIsSignedIn(true);
+  }
+
+  const handleLogout = () => {
+    setIsSignedIn(false);
+  }
+  
+  return (
+    <div className="d-flex flex-column align-items-center ">
+      <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="login"/>}></Route>
+        <Route path="/login" element={<Login onLogin={handleLogin}/>}></Route>
+        <Route 
+          path="library" 
+          element={
+            <Protected isSignedIn={isSignedIn}>
+              <Dashboard onLogout={handleLogout}/>
+            </Protected>
+          }>
+        </Route>
+        <Route path="*" element={<NotFound/>}/>
+      {/* <Login/> */}
+      </Routes> 
+      </BrowserRouter>
+    </div>
+  )
+}
+
+export default App
